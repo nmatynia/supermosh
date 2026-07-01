@@ -5,6 +5,7 @@ import { Section } from "./components/Section";
 import { NumberInput } from "./NumberInput";
 import { RangePreview } from "./RangePreview";
 import { SelectInput } from "./SelectInput";
+import { TimelineTrack } from "./TimelineTrack";
 import { Segment, Vid } from "./types";
 
 const clamp = (value: number, min: number, max: number) =>
@@ -38,6 +39,12 @@ export const Timeline = ({
           {segments.length === 0 ? (
             <p>No segments defined</p>
           ) : (
+            <>
+            <TimelineTrack
+              segments={segments}
+              setSegments={setSegments}
+              vids={vids}
+            />
             <div className="segments">
               {segments.map((s, i) => {
                 const getVid = () => vids.find((vid) => vid.name === s.name)!;
@@ -115,6 +122,7 @@ export const Timeline = ({
                 );
               })}
             </div>
+            </>
           )}
           <button
             onClick={() => {

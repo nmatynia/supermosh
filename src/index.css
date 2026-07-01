@@ -100,3 +100,98 @@ header {
   max-height: 30vh;
   object-fit: contain;
 }
+
+/* Frame-scaled timeline track */
+.TimelineTrack {
+  margin: 8px 0 16px;
+}
+.TimelineTrack-toolbar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+.TimelineTrack-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+  background: rgba(128, 128, 128, 0.08);
+}
+.TimelineTrack-lane {
+  position: relative;
+  height: 64px;
+  min-width: 100%;
+  touch-action: none;
+}
+.TimelineTrack-clip {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  display: flex;
+  align-items: stretch;
+  min-width: 2px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background: rgba(99, 102, 241, 0.35);
+  border: 1px solid rgba(99, 102, 241, 0.7);
+  overflow: hidden;
+  cursor: pointer;
+}
+.TimelineTrack-clip.is-selected {
+  background: rgba(99, 102, 241, 0.55);
+  border-color: rgb(129, 140, 248);
+  box-shadow: 0 0 0 1px rgb(129, 140, 248);
+}
+.TimelineTrack-clip-body {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  pointer-events: none;
+}
+.TimelineTrack-clip-name {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.TimelineTrack-clip-meta {
+  font-size: 11px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+.TimelineTrack-handle {
+  flex: 0 0 8px;
+  cursor: ew-resize;
+  background: rgba(255, 255, 255, 0.35);
+}
+.TimelineTrack-handle:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+.TimelineTrack-seam {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.TimelineTrack-seam-side {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+}
+.TimelineTrack-seam-side span {
+  display: block;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+.TimelineTrack-seam-arrow {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
