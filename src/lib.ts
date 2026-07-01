@@ -81,7 +81,8 @@ export const record = async (
   config: VideoDecoderConfig,
   mimeType: string,
   settings: Settings,
-  onProgress: (progress: number) => unknown
+  onProgress: (progress: number) => unknown,
+  trimStart = 0
 ) =>
   new Promise<string>((resolve) => {
     const canvas = document.createElement("canvas");
@@ -105,10 +106,12 @@ export const record = async (
       resolve(src);
     });
 
-    recorder.start();
     let i = 0;
     const interval = setInterval(() => {
       onProgress(i / chunks.length);
+      // Frames before the trim point are decoded (to build up the correct
+      // picture) but not recorded, so the first clip can start later than 0.
+      if (i === trimStart) recorder.start();
       decoder.decode(chunks[i]);
       i++;
       if (i === chunks.length - 1) {

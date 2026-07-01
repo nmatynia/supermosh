@@ -85,13 +85,18 @@ export const Rendering = ({
               setRendering(true);
               setSrc("");
 
-              const chunks = segments.flatMap((s) =>
+              // The first clip must always decode from its keyframe (index 0)
+              // so there's a real picture on screen. Its `from` is instead used
+              // as a trim point: those leading frames get decoded but not
+              // recorded (see `trimStart` in record()).
+              const trimStart = segments[0].from;
+              const chunks = segments.flatMap((s, idx) =>
                 Array(s.repeat)
                   .fill(null)
                   .flatMap(() =>
                     vids
                       .find((vid) => vid.name === s.name)!
-                      .chunks.slice(s.from, s.to),
+                      .chunks.slice(idx === 0 ? 0 : s.from, s.to),
                   ),
               );
               const mimeType = MediaRecorder.isTypeSupported("video/mp4")
@@ -103,6 +108,7 @@ export const Rendering = ({
                 mimeType,
                 settings,
                 setProgress,
+                trimStart,
               );
               setSrc(newSrc);
               setDownloadName(

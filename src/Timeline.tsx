@@ -23,7 +23,8 @@ export const Timeline = ({
 
   const fixFroms = () => {
     segments.forEach((s, i) => {
-      if (i == 0) s.from = 0;
+      // Only non-first clips need a keyframe skip (from >= 1) to mosh onto the
+      // previous clip. The first clip's `from` is a user-facing trim point.
       if (i > 0 && s.from == 0) s.from = 1;
     });
   };
@@ -69,7 +70,6 @@ export const Timeline = ({
                       }}
                       min={0}
                       max={s.to - 1}
-                      disabled={i === 0}
                       onFocus={() => setPreview({ vid: getVid(), i: s.from })}
                       onBlur={() => setPreview(null)}
                     />
