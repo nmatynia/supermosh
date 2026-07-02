@@ -195,3 +195,139 @@ header {
   opacity: 0.7;
   white-space: nowrap;
 }
+.TimelineTrack-clip-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.TimelineTrack-clip-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0 3px;
+  border-radius: 2px;
+  background: rgb(129, 140, 248);
+  color: #111;
+}
+.TimelineTrack-clip-curve {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.TimelineTrack-clip-curve polyline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Speed remap graph editor */
+.SpeedEditor {
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+}
+.SpeedEditor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.SpeedEditor-head span {
+  opacity: 0.6;
+}
+.SpeedEditor-svg {
+  display: block;
+  width: 100%;
+  height: 180px;
+  touch-action: none;
+  background: rgba(128, 128, 128, 0.08);
+  border-radius: 3px;
+  cursor: crosshair;
+  outline: none;
+}
+.SpeedEditor-svg:focus-visible {
+  box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.6);
+}
+.SpeedEditor-grid {
+  stroke: rgba(128, 128, 128, 0.3);
+  stroke-width: 1;
+}
+.SpeedEditor-tick {
+  stroke: rgba(128, 128, 128, 0.15);
+  stroke-width: 1;
+}
+.SpeedEditor-ticklabel {
+  fill: rgba(160, 160, 160, 0.6);
+  font-size: 9px;
+  text-anchor: middle;
+}
+.SpeedEditor-zone {
+  fill: rgba(160, 160, 160, 0.35);
+  font-size: 9px;
+  text-anchor: end;
+  pointer-events: none;
+}
+.SpeedEditor-fill {
+  fill: rgba(129, 140, 248, 0.1);
+  pointer-events: none;
+}
+.SpeedEditor-hoverline {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+.SpeedEditor-readout {
+  fill: #fff;
+  font-size: 10px;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.75);
+  stroke-width: 3px;
+}
+.SpeedEditor-hit {
+  fill: transparent;
+  cursor: grab;
+}
+.SpeedEditor-base {
+  stroke: rgba(128, 128, 128, 0.6);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.SpeedEditor-axis {
+  fill: rgba(160, 160, 160, 0.8);
+  font-size: 10px;
+}
+.SpeedEditor-curve {
+  fill: none;
+  stroke: rgb(129, 140, 248);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.SpeedEditor-dot {
+  fill: #fff;
+  stroke: rgb(99, 102, 241);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.SpeedEditor-dot.is-selected {
+  fill: rgb(129, 140, 248);
+}
+.SpeedEditor-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.SpeedEditor-controls label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.SpeedEditor-controls input {
+  width: 64px;
+}

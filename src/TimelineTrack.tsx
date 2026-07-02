@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 
 import { RangePreview } from "./RangePreview";
+import { clipOutputLength, evalSpeed, MAX_SPEED, MIN_SPEED } from "./speed";
+import { SpeedEditor } from "./SpeedEditor";
 import { Segment, Vid } from "./types";
 
 const clamp = (value: number, min: number, max: number) =>
@@ -8,6 +10,23 @@ const clamp = (value: number, min: number, max: number) =>
 
 // A segment contributes (to - from) frames, looped `repeat` times.
 const frameLength = (s: Segment) => (s.to - s.from) * s.repeat;
+
+// Sparkline of a segment's speed curve, drawn over its clip (0-100 viewBox,
+// log-scaled like the SpeedEditor so <1x dips are visible).
+const speedCurvePoints = (s: Segment) => {
+  const span = Math.max(s.to - s.from, 1);
+  const logMin = Math.log(MIN_SPEED);
+  const logMax = Math.log(MAX_SPEED);
+  const N = 48;
+  const pts: string[] = [];
+  for (let i = 0; i <= N; i++) {
+    const f = s.from + (span * i) / N;
+    const sp = clamp(evalSpeed(s.speedKeys, f), MIN_SPEED, MAX_SPEED);
+    const y = 100 - ((Math.log(sp) - logMin) / (logMax - logMin)) * 100;
+    pts.push(`${(i / N) * 100},${y}`);
+  }
+  return pts.join(" ");
+};
 
 // Non-first clips must skip their keyframe (from >= 1) so they mosh onto the
 // previous clip instead of resetting the picture.
@@ -136,15 +155,32 @@ export const TimelineTrack = ({
               }}
               onPointerDown={() => setSelected(i)}
             >
+              {s.speedKeys?.length ? (
+                <svg
+                  className="TimelineTrack-clip-curve"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                >
+                  <polyline points={speedCurvePoints(s)} />
+                </svg>
+              ) : null}
               <div
                 className="TimelineTrack-handle left"
                 onPointerDown={(e) => onHandleDown(e, i, "from")}
               />
               <div className="TimelineTrack-clip-body">
-                <span className="TimelineTrack-clip-name">{s.name}</span>
+                <span className="TimelineTrack-clip-name">
+                  {s.name}
+                  {s.speedKeys?.length ? (
+                    <span className="TimelineTrack-clip-badge">spd</span>
+                  ) : null}
+                </span>
                 <span className="TimelineTrack-clip-meta">
                   {s.from}–{s.to}
                   {s.repeat > 1 ? ` ×${s.repeat}` : ""}
+                  {s.speedKeys?.length
+                    ? ` → ${clipOutputLength(getVid(s).chunks, s) * s.repeat}f`
+                    : ""}
                 </span>
               </div>
               <div
@@ -168,6 +204,14 @@ export const TimelineTrack = ({
             <RangePreview vid={getVid(selectedSeg)} i={selectedSeg.from} />
           </div>
         </div>
+      )}
+
+      {selectedSeg && (
+        <SpeedEditor
+          segment={selectedSeg}
+          index={selected}
+          setSegments={setSegments}
+        />
       )}
     </div>
   );

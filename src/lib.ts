@@ -2,6 +2,7 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
 import { createFile, DataStream, MP4ArrayBuffer, MP4File } from "mp4box";
 
+import { TimedChunk } from "./speed";
 import { Settings } from "./types";
 
 export const FPS = 30;
@@ -77,7 +78,7 @@ export const computeChunks = (
   });
 
 export const record = async (
-  chunks: EncodedVideoChunk[],
+  chunks: TimedChunk[],
   config: VideoDecoderConfig,
   mimeType: string,
   settings: Settings,
@@ -106,17 +107,49 @@ export const record = async (
       resolve(src);
     });
 
-    let i = 0;
+    // Chunks appear once in the stream but timestamps can still collide
+    // across segments (each clip keeps its source timestamps), so rewrap
+    // every decode with a fresh, strictly increasing timestamp. The encoded
+    // data is untouched, and MediaRecorder captures the canvas in wall-clock
+    // time so chunk timestamps carry no other meaning here.
+    const rewrap = (chunk: EncodedVideoChunk, index: number) => {
+      const data = new ArrayBuffer(chunk.byteLength);
+      chunk.copyTo(data);
+      return new EncodedVideoChunk({
+        type: chunk.type,
+        timestamp: (index * 1e6) / FPS,
+        duration: 1e6 / FPS,
+        data,
+      });
+    };
+
+    const totalFrames = chunks.reduce((sum, tc) => sum + tc.hold, 0);
+    let idx = 0; // which chunk
+    let held = 0; // output ticks already spent on the current chunk
+    let outFrame = 0; // output frame counter
     const interval = setInterval(() => {
-      onProgress(i / chunks.length);
+      onProgress(outFrame / totalFrames);
       // Frames before the trim point are decoded (to build up the correct
       // picture) but not recorded, so the first clip can start later than 0.
-      if (i === trimStart) recorder.start();
-      decoder.decode(chunks[i]);
-      i++;
-      if (i === chunks.length - 1) {
-        recorder.stop();
+      if (outFrame === trimStart) recorder.start();
+      // Decode each chunk exactly once — re-decoding the same coded frame
+      // freezes or errors real decoders. Slow-mo (hold > 1) is achieved by
+      // leaving the picture on the canvas while the recorder keeps rolling.
+      if (held === 0) decoder.decode(rewrap(chunks[idx].chunk, outFrame));
+      held++;
+      outFrame++;
+      if (held >= chunks[idx].hold) {
+        idx++;
+        held = 0;
+      }
+      if (idx >= chunks.length) {
         clearInterval(interval);
+        // Drain frames still buffered in the decoder before cutting the
+        // recording, so the tail of the last clip isn't dropped.
+        decoder
+          .flush()
+          .catch(() => {})
+          .finally(() => recorder.stop());
       }
     }, 1000 / FPS);
   });

@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Section } from "./components/Section";
 import { record } from "./lib";
 import { NumberInput } from "./NumberInput";
+import { clipOutputChunks } from "./speed";
 import { Segment, Settings, Vid } from "./types";
 
 export const Rendering = ({
@@ -94,9 +95,11 @@ export const Rendering = ({
                 Array(s.repeat)
                   .fill(null)
                   .flatMap(() =>
-                    vids
-                      .find((vid) => vid.name === s.name)!
-                      .chunks.slice(idx === 0 ? 0 : s.from, s.to),
+                    clipOutputChunks(
+                      vids.find((vid) => vid.name === s.name)!.chunks,
+                      s,
+                      idx === 0,
+                    ),
                   ),
               );
               const mimeType = MediaRecorder.isTypeSupported("video/mp4")
