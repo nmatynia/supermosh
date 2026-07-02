@@ -222,6 +222,121 @@ header {
   vector-effect: non-scaling-stroke;
 }
 
+/* Rendering — output size & per-clip fit */
+.Rendering-output {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.Rendering-output input {
+  width: 72px;
+}
+.Rendering-ratio {
+  opacity: 0.6;
+  font-size: 12px;
+}
+.Rendering-output button.is-active {
+  background: rgb(129, 140, 248);
+  color: #111;
+}
+.Rendering-clips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.FitCard {
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.FitCard.is-stale {
+  border-color: rgba(250, 204, 21, 0.7);
+}
+.FitCard-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+.FitCard-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.FitCard-res {
+  opacity: 0.6;
+  white-space: nowrap;
+}
+.FitCard-stage {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.FitCard-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.FitCard-media.is-custom {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.FitCard-modes {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.FitCard-modes button {
+  font-size: 11px;
+  padding: 2px 6px;
+}
+.FitCard-modes button.is-active {
+  background: rgb(129, 140, 248);
+  color: #111;
+}
+.FitCard-custom {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.FitCard-custom input {
+  width: 60px;
+}
+.FitCard-custom button.is-active {
+  background: rgb(129, 140, 248);
+  color: #111;
+}
+.FitCard-caption {
+  font-size: 11px;
+  opacity: 0.65;
+  min-height: 13px;
+}
+.FitCard.is-stale .FitCard-caption {
+  opacity: 0.9;
+  color: rgb(250, 204, 21);
+}
+.Rendering-stale {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border: 1px solid rgba(250, 204, 21, 0.5);
+  border-radius: 4px;
+  padding: 8px;
+}
+
 /* Speed remap graph editor */
 .SpeedEditor {
   margin-top: 12px;
